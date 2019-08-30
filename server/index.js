@@ -4,6 +4,8 @@ const { Nuxt, Builder } = require('nuxt')
 
 const surveys = require('../server/queries/surveys.js');
 
+const graphing = require('../server/graphing.js')
+
 const app = express()
 
 var _ = require('underscore');
@@ -53,6 +55,11 @@ app.get('/update-dropdown-choice', (req, res) => {
 app.get('/surveyjson/:id', (req, res) => {
   const id = req.params.id;
   surveys.getSurveyJSON(id, res)
+})
+
+app.get('/displaygraphjson', (req, res) => {
+  graphing.getGraph()
+  res.json("graphBOB")
 })
 
 start()
