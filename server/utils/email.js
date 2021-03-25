@@ -20,7 +20,8 @@ exports.send = async function(toAddress, title, body) {
             clientId: clientID,
             clientSecret: clientSecret,
             refreshToken: refreshToken,
-            accessToken: accessToken
+            accessToken: accessToken,
+            accessType: 'offline'
         }
     });
     var mailOptions = {
