@@ -1,39 +1,24 @@
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
+const sgMail = require('@sendgrid/mail')
 
 
 exports.send = async function(toAddress, title, body) {
-    const clientID = process.env.EMAIL_CLIENT_ID;
-    const clientSecret = process.env.EMAIL_CLIENT_SECRET;
-    const redirectURI = process.env.EMAIL_REDIRECT_URI;
-    const refreshToken = process.env.EMAIL_REFRESH_TOKEN;
-    const userEmail = process.env.EMAIL_USER;
+    sgMail.setApiKey(process.env.EMAIL_SENDGRID_API_KEY)
+    const fromAddress = process.env.EMAIL_USER;
 
-    let oAuth2Client = new google.auth.OAuth2(clientID, clientSecret, redirectURI);
-    oAuth2Client.setCredentials({ refresh_token: refreshToken });
-    let accessToken = await oAuth2Client.getAccessToken();
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            type: 'OAuth2',
-            user: userEmail,
-            clientId: clientID,
-            clientSecret: clientSecret,
-            refreshToken: refreshToken,
-            accessToken: accessToken,
-            accessType: 'offline'
-        }
-    });
-    var mailOptions = {
-        from: userEmail,
-        to: toAddress,
+    const msg = {
+        to: toAddress, // Change to your recipient
+        from: fromAddress, // Change to your verified sender
         subject: title,
         text: body
-    };
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            //TODO: Handle errors properly
-            console.error(error);
-        }
-    });
+    }
+
+    sgMail
+        .send(msg)
+        .then((response) => {
+            console.log(response[0].statusCode)
+            console.log(response[0].headers)
+        })
+        .catch((error) => {
+            console.error(error)
+        })
 }

@@ -29,6 +29,7 @@
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/vuetify": "^1.11.2",
+    "@sendgrid/mail": "^7.4.2",
     "@typeform/embed": "^0.9.3",
     "auto-prefixer": "^0.4.2",
     "autoprefixer": "^9.8.5",
