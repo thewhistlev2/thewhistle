@@ -14,10 +14,6 @@ exports.send = async function(toAddress, title, body) {
 
     sgMail
         .send(msg)
-        .then((response) => {
-            console.log(response[0].statusCode)
-            console.log(response[0].headers)
-        })
         .catch((error) => {
             console.error(error)
         })

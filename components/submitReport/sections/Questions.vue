@@ -1,7 +1,10 @@
 <template>
-    <div style="margin: 0 auto; width: 600px;">
-        <!-- TODO - ensure height works -->
-        <div style="width: 100%; height: 500px;" id="embedded-typeform"></div>
+    <div>
+        <p style="text-align: left;">You can skip any questions that are not required by scrolling down.</p>
+        <div style="margin: 0 auto; width: 600px;">
+            <!-- TODO - ensure height works -->
+            <div style="width: 100%; height: 500px;" id="embedded-typeform"></div>
+        </div>
     </div>
 </template>
 
