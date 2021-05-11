@@ -103,7 +103,7 @@ function generateStatement(question) {
         title: question.title,
         properties: {
             button_text: "Continue",
-            hide_marks: false
+            hide_marks: true
         },
         type: "statement"
     }
