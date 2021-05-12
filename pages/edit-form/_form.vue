@@ -2,10 +2,10 @@
     <div>
         
         <h1>{{ title }}</h1>
-        <p>{{ description }}</p>
+        <v-textarea v-model="description" @change="updateDescription" label="Form Description" outlined />
+
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
         <br><br>
-        <v-textarea v-model="completed.text" @change="updateCompleted" label="Text Shown On Completion" outlined />
         <v-switch v-model="completed.allowDownload" class="ma-2" label="Allow reporter to download PDF?" @change="updateCompleted"></v-switch>
 
         <v-btn v-if="editJSON.length == 0" outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
@@ -97,6 +97,13 @@ export default {
                 this.currentTab = this.editJSON.length > 0 ? 1 : 0;
                 this.currentSection = this.currentTab;
             })
+        },
+
+        updateDescription() {
+            let url = `/api/edit-form/${this.$route.params.form}/update-description`;
+            axios.patch(url, { description: this.description }).then((response) => {
+                //TODO: Handle errors
+            });
         },
 
         updateCompleted() {

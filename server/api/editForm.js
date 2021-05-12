@@ -12,9 +12,11 @@ router.post('/:slug/create', createForm);
 
 router.post('/:slug/add-section', addSection);
 
-router.patch('/:sectionID/update-section', updateSection);
-
 router.patch('/:slug/update-completed', updateCompleted);
+
+router.patch('/:slug/update-description', updateFormDescription)
+
+router.patch('/:sectionID/update-section', updateSection);
 
 router.patch('/:sectionID/update-question-title/:questionRef', updateQuestionTitle);
 
@@ -40,7 +42,7 @@ router.patch('/:sectionID/update-allow-multiple/:questionRef', updateAllowMultip
 
 router.patch('/:sectionID/update-allow-other/:questionRef', updateAllowOther);
 
-router.patch('/:sectionID/update-description/:questionRef', updateDescription);
+router.patch('/:sectionID/update-description/:questionRef', updateQuestionDescription);
 
 
 async function getForm(req, res, next) {
@@ -108,6 +110,22 @@ async function updateCompleted(req, res, next) {
     } catch (err) {
         res.status(500);
         res.send('Could not update section');
+        next(err);
+    }
+}
+
+async function updateFormDescription(req, res, next) {
+    try {
+        //TODO: Input validations
+        let formSlug = req.params.slug;
+        let description = req.body.description;
+        console.log('DESCR', description);
+        await Forms.updateDescription(formSlug, description);
+        res.status(200);
+        res.send();
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update form description');
         next(err);
     }
 }
@@ -240,7 +258,7 @@ async function deleteDescription(req, res, next) {
         });
     } catch (err) {
         res.status(500);
-        res.send('Could not delete description');
+        res.send('Could not delete question description');
         next(err);
     }
 }
@@ -271,15 +289,15 @@ async function updateAllowOther(req, res, next) {
     }
 }
 
-async function updateDescription(req, res, next) {
+async function updateQuestionDescription(req, res, next) {
     try {
-        const section = await FormGen.updateDescription(req.params.sectionID, req.params.questionRef, req.body.description);
+        const section = await FormGen.updateQuestionDescription(req.params.sectionID, req.params.questionRef, req.body.description);
         res.json({
             section: section
         });
     } catch (err) {
         res.status(500);
-        res.send('Could not update description');
+        res.send('Could not update question description');
         next(err);
     }
 }

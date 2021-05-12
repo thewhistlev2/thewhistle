@@ -340,6 +340,15 @@ exports.getFormFromSlug = async function (slug, test) {
     }
 }
 
+exports.updateDescription = async function(slug, description) {
+    let query = `UPDATE forms SET description='${description}' WHERE slug='${slug}'`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('forms', query, err);
+    }
+}
+
 exports.updateJSON = async function(sectionID, form) {
     //TODO: Make work for multiple sections
     let query = `UPDATE formsections SET test_json='${JSON.stringify(form)}' WHERE id='${sectionID}'`;

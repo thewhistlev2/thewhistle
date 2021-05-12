@@ -825,7 +825,7 @@ exports.updateAllowOther = async function (sectionID, questionRef, allowOther) {
     return retSection;
 }
 
-exports.updateDescription = async function (sectionID, questionRef, description) {
+exports.updateQuestionDescription = async function (sectionID, questionRef, description) {
     let sectionJSON = await Forms.getSectionJSON(sectionID, true);
     let section = sectionJSON.form;
     section.typeformID = section.id;
