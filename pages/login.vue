@@ -43,7 +43,7 @@ export default {
                 this.loginDetails = loginInfo;
                 this.error = null;
             }).catch((err) => {
-                if (err.status == 401) {
+                if (err.response.status == 401) {
                     this.error = 'Incorrect login credentials. Please try again.';
                 } else {
                     this.error = 'Something went wrong';
