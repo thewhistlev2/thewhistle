@@ -256,6 +256,7 @@ exports.generatePDF = async function (sessionID) {
     let text = await generateSessionPDFText(sessionID);
     let path = `./temp/session-${sessionID}.pdf`;
     const doc = new jsPDF();
-    doc.text(text, 10, 10);
+    let splitText = doc.splitTextToSize(text, 180);
+    doc.text(splitText, 10, 10);
     await doc.save(path);
 }
