@@ -11,6 +11,7 @@ router.post('/typeform-webhook/:section', async (req, res) => {
 
 router.get('/:slug', async (req, res, next) => {
     try {
+        console.log('GETTING REPS')
         let reports = await responses.getReportsFromFormSlug(req.params.slug, false);
         res.json(reports);
     } catch (err) {

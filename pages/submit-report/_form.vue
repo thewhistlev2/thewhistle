@@ -1,12 +1,12 @@
 <template>
     <div>
         <h1>{{ form.title }}</h1>
-        <div v-if="form.sections[0].type=='typeform'">
-            <no-ssr style="height: 100%">
-                <!-- TODO: Make work for multiple sections and other section types -->
-                <Webform :test="false" :form="form.id" :typeformID="form.sections[0].json.id"></Webform>
-            </no-ssr>
-        </div>
+        <div v-if="form.web">
+                <no-ssr style="height: 100%">
+                    <!-- TODO: Make work for multiple sections and other section types -->
+                    <Webform :test="false" :form="form"></Webform>
+                </no-ssr>
+            </div>
         <div v-else-if="form.sections[0].type=='sms'">
             Display SMS Emulator Here
         </div>
