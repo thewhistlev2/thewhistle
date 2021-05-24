@@ -96,6 +96,8 @@ exports.updateForm = async function (form) {
             data: data
         });
     } catch (err) {
+        //console.log('forrr', data);
+        //console.log('errrr', err);
         throw new TypeformUpdateError(form, err);
     }
     return form;

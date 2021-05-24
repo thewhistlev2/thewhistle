@@ -78,11 +78,10 @@ async function getReporterNumberFromSession(sessionID) {
 }
 
 function generateEmailVerificationBody(verificationCode, reporterNumber, customText) {
-    let body = `Hello!\n\nYour verification code is ${verificationCode}.\n\nSince we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\n`;
+    let body = `${customText}\n\nYour verification code is ${verificationCode}.\n\nSince we do not store your email address, you will need to generate a new authentication code every time you submit a report.\n\n`;
     if (reporterNumber) {
         body += `Your reporter number is ${reporterNumber}. You can use this number to report multiple incidents. That lets us know that a set of reports all come from the same source.\n\n`;
     }
-    body += customText;
     return body;
 }
 

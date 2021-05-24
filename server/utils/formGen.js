@@ -400,6 +400,7 @@ function generateNewTypeformJSON(title) {
             is_public: true,
             show_progress_bar: true,
             show_typeform_branding: true,
+            hide_navigation: false
         },
         hidden: [
             "session"
@@ -449,6 +450,20 @@ async function generateInitialSectionJSON(type, title) {
 
 exports.updateSection = updateSection;
 
+exports.updateSectionCompletedText = async function (sectionID, completedText) {
+    let sectionJSON = await Forms.getSectionJSON(sectionID, true);
+    let section = sectionJSON.form;
+    section.typeformID = section.id;
+    section.id = sectionID;
+    section.type = sectionJSON.type;
+    //TODO: Check question ref doesn't already exist
+    if (!section.logic) {
+        section.logic = [];
+    }
+    section.thankyou_screens[0].title = completedText;
+    await updateSection(section);
+}
+
 exports.createForm = async function (slug, title, description, org, web) {
     try {
         let formJSON = web ? generateNewTypeformJSON(title) : generateNewSMSFormJSON(title);
@@ -477,10 +492,34 @@ exports.addSection = async function (formSlug, newSection) {
     };
     if (newSection.type == 'Questions') {
         ret.questions = Forms.generateEditJSON(json.test);
+        ret.completedText = json.test.thankyou_screens[0].title;
     } else {
         ret.json = json.test;
     }
     return ret;
+}
+
+exports.publish = async function(formSlug) {
+    let sections = await FormSections.getSectionsFromSlug(formSlug);
+    let typeformID = '';
+    let display = '';
+    for (let i = 0; i < sections.length; i++) {
+        if (sections[i].type == 'Questions') {
+            typeformID = sections[i].json.id;
+            display = sections[i].json._links.display;
+            sections[i].json = sections[i].test_json;
+            sections[i].json.typeformID = typeformID;
+            sections[i].json._links.display = display;
+            await Typeform.updateForm(sections[i].json);
+        } else {
+            sections[i].json = sections[i].test_json;
+        }
+        await FormSections.updateJSON(sections[i].id, sections[i].json);
+    }
+
+    let formID = await Forms.updatePublished(formSlug, true);
+
+    await Forms.publishLogic(formID);
 }
 
 exports.updateQuestionTitle = async function(sectionID, questionRef, questionTitle) {

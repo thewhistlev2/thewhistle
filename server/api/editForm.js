@@ -16,7 +16,11 @@ router.patch('/:slug/update-completed', updateCompleted);
 
 router.patch('/:slug/update-description', updateFormDescription)
 
+router.post('/:slug/publish', publishForm)
+
 router.patch('/:sectionID/update-section', updateSection);
+
+router.patch('/:sectionID/update-completed-text', updateCompletedText);
 
 router.patch('/:sectionID/update-question-title/:questionRef', updateQuestionTitle);
 
@@ -83,6 +87,19 @@ async function addSection(req, res, next) {
     }
 }
 
+async function updateCompletedText(req, res, next) {
+    try {
+        //TODO: Input validations
+        await FormGen.updateSectionCompletedText(req.params.sectionID, req.body.completedText);
+        res.status(200);
+        res.send();
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update section completed text');
+        next(err);
+    }
+}
+
 async function updateSection(req, res, next) {
     try {
         //TODO: Input validations
@@ -119,13 +136,26 @@ async function updateFormDescription(req, res, next) {
         //TODO: Input validations
         let formSlug = req.params.slug;
         let description = req.body.description;
-        console.log('DESCR', description);
         await Forms.updateDescription(formSlug, description);
         res.status(200);
         res.send();
     } catch (err) {
         res.status(500);
         res.send('Could not update form description');
+        next(err);
+    }
+}
+
+async function publishForm(req, res, next) {
+    try {
+        //TODO: Input validations
+        let formSlug = req.params.slug;
+        await FormGen.publish(formSlug);
+        res.status(200);
+        res.send();
+    } catch (err) {
+        res.status(500);
+        res.send('Could not publish form');
         next(err);
     }
 }

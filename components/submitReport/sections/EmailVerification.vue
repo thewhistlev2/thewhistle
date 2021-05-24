@@ -49,19 +49,23 @@ export default {
 
     methods: {
         validEnding(email) {
-            if (this.$attrs.section.json.allowedEndings) {
-                if (this.$attrs.section.json.allowedEndings.length == 0) {
-                    return true;
-                } else {
-                    for (let i = 0; i < this.$attrs.section.json.allowedEndings.length; i++) {
-                        if (email.endsWith(this.$attrs.section.json.allowedEndings[i])) {
-                            return true;
+            if (this.$attrs.section.json) {
+                if (this.$attrs.section.json.allowedEndings) {
+                    if (this.$attrs.section.json.allowedEndings.length == 0) {
+                        return true;
+                    } else {
+                        for (let i = 0; i < this.$attrs.section.json.allowedEndings.length; i++) {
+                            if (email.endsWith(this.$attrs.section.json.allowedEndings[i])) {
+                                return true;
+                            }
                         }
+                        return false;
                     }
+                } else {
                     return false;
                 }
             } else {
-                return false;
+                return true;
             }
         },
 

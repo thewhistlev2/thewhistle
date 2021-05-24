@@ -11,24 +11,24 @@
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
                     <v-btn color="blue darken-1" text v-on:click="closeModal">Close</v-btn>
-                    <v-btn color="blue darken-1" disabled="!valid" text @click="publishForm">Publish</v-btn>
+                    <v-btn color="blue darken-1" text @click="publishForm">Publish</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
     </v-row>
 </template>
 <script>
-    export default {
-        methods: {
-            publishForm() {
-                this.closeModal();
-                //TODO - L - post from ID to API to change published flag from false to true
-            },
+export default {
+    methods: {
+        publishForm() {
+            this.$emit('publish');
+            this.closeModal();
+        },
 
-            closeModal() {
-                this.$attrs.show = false;
-                this.$emit('close');
-            }
+        closeModal() {
+            this.$attrs.show = false;
+            this.$emit('close');
         }
     }
+}
 </script>

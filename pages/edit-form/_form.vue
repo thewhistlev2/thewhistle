@@ -3,7 +3,7 @@
         
         <h1>{{ title }}</h1>
         <v-textarea v-model="description" @change="updateDescription" label="Form Description" outlined />
-
+        <v-textarea v-model="completed.text" @change="updateCompleted" label="Message On Completion (markdown)" outlined />
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
         <br><br>
         <v-switch v-model="completed.allowDownload" class="ma-2" label="Allow reporter to download PDF?" @change="updateCompleted"></v-switch>
@@ -83,6 +83,10 @@ export default {
     created() {
         this.fetchData();
         //TODO: Move to async data?
+    },
+
+    mounted() {
+        
     },
 
     methods: {

@@ -271,6 +271,7 @@ exports.getEditFormJSON = async function(slug) {
         sectionLogic[i].type = results.rows[0].type;
         if (sectionLogic[i].type == 'Questions') {
             sectionLogic[i].questions = generateEditJSON(results.rows[0].json);
+            sectionLogic[i].completedText = results.rows[0].json.thankyou_screens[0].title;
         } else {
             sectionLogic[i].json = results.rows[0].json;
         }
@@ -349,6 +350,17 @@ exports.updateDescription = async function(slug, description) {
     }
 }
 
+exports.updatePublished = async function(slug, published) {
+    let query = `UPDATE forms SET published=${published} WHERE slug='${slug}' RETURNING id`;
+    try {
+        let results = await db.query(query);
+        let formID = results.rows[0].id;
+        return formID
+    } catch (err) {
+        throw new DBUpdateError('forms', query, err);
+    }
+}
+
 exports.updateJSON = async function(sectionID, form) {
     //TODO: Make work for multiple sections
     let query = `UPDATE formsections SET test_json='${JSON.stringify(form)}' WHERE id='${sectionID}'`;
@@ -385,6 +397,15 @@ exports.addFormSectionLogicSection = async function (index, formID, sectionID, d
         await db.query(query);
     } catch (err) {
         throw new DBUpdateError('formsections', query, err);
+    }
+}
+
+exports.publishLogic = async function(formID) {
+    let query = `UPDATE formsectionlogic SET logic=test_logic WHERE form=${formID}`;
+    try {
+        await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('formsectionlogic', query, err);
     }
 }
 

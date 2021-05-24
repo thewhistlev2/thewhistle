@@ -1,14 +1,14 @@
 <template>
     <div>
         <v-btn :to="testFormURL" class="blueBtn" text>View Test Form</v-btn>
-        <v-btn v-if="this.$attrs.form.published" :to="liveFormURL" class="blueBtn" text>View Live Form</v-btn>
+        <v-btn v-if="$attrs.form.published" :to="liveFormURL" class="blueBtn" text>View Live Form</v-btn>
         <v-btn :to="testReportsURL" class="blueBtn" text>View Test Reports</v-btn>
         <v-btn :to="reportsURL" class="blueBtn" text>View Reports</v-btn>
         <template v-if="canEdit">
             <v-btn :to="editURL" class="blueBtn" text>Edit</v-btn>
-            <v-btn v-on:click="showPublishModal = true" class="blueBtn" text>Publish</v-btn>
+            <v-btn v-if="!$attrs.form.published" v-on:click="showPublishModal = true" class="blueBtn" text>Publish</v-btn>
             <v-btn v-on:click="showDeleteModal = true" class="blueBtn" text>Delete</v-btn>
-            <FormPublishModal :show="showPublishModal" @close="closePublishModal" :formSlug="this.$attrs.form.slug" :formTitle="this.$attrs.form.title" />
+            <FormPublishModal :show="showPublishModal" @publish="publish" @close="closePublishModal" :formSlug="this.$attrs.form.slug" :formTitle="this.$attrs.form.title" />
             <FormDeleteModal :show="showDeleteModal" @close="closeDeleteModal" :formSlug="this.$attrs.form.slug" :formTitle="this.$attrs.form.title" />
         </template>
     </div>
@@ -24,6 +24,7 @@
 
 import FormPublishModal from './FormPublishModal.vue';
 import FormDeleteModal from './FormDeleteModal.vue';
+import axios from 'axios'
 
 export default {
     components: {
@@ -64,9 +65,17 @@ export default {
         closePublishModal() {
             this.showPublishModal = false;
         },
+
         closeDeleteModal() {
             this.showDeleteModal = false;
         },
+
+        publish() {
+            let url = `/api/edit-form/${this.$attrs.form.slug}/publish`;
+            axios.post(url).then((response) => {
+                this.$attrs.form.published = true;
+            });
+        }
     }
 }
 </script>
