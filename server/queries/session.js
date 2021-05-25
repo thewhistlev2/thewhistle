@@ -199,7 +199,8 @@ exports.sendEmailVerification = async function (sessionID, sectionID, email, tes
 
     let reporterNumber = await getReporterNumberFromSession(sessionID);
     let emailBody = generateEmailVerificationBody(verificationCode, reporterNumber, section.form.email.text);
-    Email.send(email, section.form.email.subject, emailBody); //TODO: Implement this (note: it's async)
+    let subject = section.form.email.subject ? section.form.email.subject : 'The Whistle Reporting Email Verification';
+    Email.send(email, subject, emailBody); //TODO: Implement this (note: it's async)
     updateVerificationCode(sessionID, verificationCode);
 }
 
