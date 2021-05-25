@@ -375,6 +375,7 @@ function generateReporterSection(title) {
 
 function generateEmailVerificationSection(title) {
     return {
+        prompt: 'Please enter an email address for verification purposes. This helps to give greater credibility to the data we are collecting. We do not store your email address after sending you the verification email.',
         title: title,
         allowedEndings: [],
         email: {

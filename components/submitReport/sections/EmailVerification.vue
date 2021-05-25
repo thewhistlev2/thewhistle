@@ -1,5 +1,6 @@
 <template>
     <div>
+        <p>{{$attrs.section.prompt}}</p>
         <v-form v-model="validEmail" @submit.prevent>
             <v-text-field v-model="email" label="Email" :rules="emailRules" outlined></v-text-field>
         </v-form>

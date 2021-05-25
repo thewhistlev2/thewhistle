@@ -1,5 +1,9 @@
 <template>
     <div>
+        <br><br>
+        <div>
+            <v-textarea v-model="$attrs.section.json.prompt" @change="updateSection" label="Prompt for Email Address" outlined />
+        </div>
         <div class="email">
             <v-text-field v-model="$attrs.section.json.email.subject" @change="updateSection" label="Subject" outlined />
             <v-textarea v-model="$attrs.section.json.email.text" @change="updateSection" label="Custom Email Text" outlined />

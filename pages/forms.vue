@@ -1,12 +1,12 @@
 <template>
     <div>
+        <v-btn v-on:click="showCreateFormModal = true" class="blueBtn" text>Create New Form</v-btn>
         <v-card v-for="form in forms" :key="form.slug" style="margin-bottom: 30px;">
             <v-card-title class="align-end fill-height">{{ form.organisation }} - {{ form.title }}</v-card-title>
             <v-card-actions>
                 <FormActions :form="form" />
             </v-card-actions>
         </v-card>
-        <v-btn v-on:click="showCreateFormModal = true" class="blueBtn" text>Create New Form</v-btn>
         <CreateFormModal :show="showCreateFormModal" :newForm="newForm" :allForms="forms" @close="closeCreateFormModal" @submit="createForm" />
     </div>
 </template>
