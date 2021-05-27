@@ -2,10 +2,11 @@
     <div>
         
         <h1>{{ title }}</h1>
-        <v-textarea v-model="description" @change="updateDescription" label="Form Description" outlined />
-        <v-textarea v-model="completed.text" @change="updateCompleted" label="Message On Completion (markdown)" outlined />
-        <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
+        <MarkdownEditor title="Form Description" :text="description" @save="updateDescription"></MarkdownEditor>
+        <MarkdownEditor title="Message on Completion" :text="completed.text" @save="updateCompleted"></MarkdownEditor>
+               <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
         <br><br>
+
         <v-switch v-model="completed.allowDownload" class="ma-2" label="Allow reporter to download PDF?" @change="updateCompleted"></v-switch>
 
         <v-btn v-if="editJSON.length == 0" outlined v-on:click="openAddSectionModal(0)" class="blueBtn">Add first section</v-btn>
@@ -17,8 +18,7 @@
                 </template>
                 <template v-else>
                     <v-icon>mdi-plus-circle</v-icon>
-                </template>
-                
+                </template> 
             </v-tab>
             <v-tabs-items v-model="currentTab">
                 <v-tab-item v-for="tab in tabs" :key="tab.key">
@@ -35,7 +35,6 @@
         <AddSectionModal :show="showAddSectionModal" :newSection="newSection" :web="web" @close="closeAddSectionModal" @submit="addSection" />
     </div>
 </template>
-
 <style scoped>
 .blueBtn {
     background-color: #50addb;
@@ -44,6 +43,7 @@
 </style>
 
 <script>
+import MarkdownEditor from '../../components/editForm/MarkdownEditor.vue'
 import EditQuestionSection from '../../components/editForm/EditQuestionSection.vue';
 import EditEmailVerificationSection from '../../components/editForm/EditEmailVerificationSection.vue';
 import EditReporterNumberSection from '../../components/editForm/EditReporterNumberSection.vue';
@@ -57,7 +57,8 @@ export default {
         EditQuestionSection,
         AddSectionModal,
         EditEmailVerificationSection,
-        EditReporterNumberSection
+        EditReporterNumberSection,
+        MarkdownEditor
     },
     
     data() {
@@ -103,9 +104,9 @@ export default {
             })
         },
 
-        updateDescription() {
+        updateDescription(description) {
             let url = `/api/edit-form/${this.$route.params.form}/update-description`;
-            axios.patch(url, { description: this.description }).then((response) => {
+            axios.patch(url, { description: description }).then((response) => {
                 //TODO: Handle errors
             });
         },

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="!startedReport">
-            {{ $attrs.form.description }}
+            <VueMarkdown :anchorAttributes="{target:'_blank'}">{{$attrs.form.description}}</VueMarkdown>
             <br>
             <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
         </div>
@@ -33,13 +33,15 @@ import Questions from './sections/Questions.vue';
 import Completed from './sections/Completed.vue';
 //TODO: Do imports
 import axios from 'axios';
+import VueMarkdown from 'vue-markdown';
 
 export default {
     components: {
         Questions,
         Completed,
         ReporterNumber,
-        EmailVerification
+        EmailVerification,
+        VueMarkdown
     },
 
     data() {

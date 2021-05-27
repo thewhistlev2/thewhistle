@@ -52,14 +52,14 @@ module.exports = {
     /*
      ** Plugins to load before mounting the App
      */
-    plugins: [],
+    plugins: [ { src: '~/plugins/MarkdownEditor.js', mode: 'client' } ],
     /*
      ** Nuxt.js modules
      */
     modules: [
         '@nuxtjs/vuetify',
         '@nuxtjs/axios',
-        'cookie-universal-nuxt'
+        'cookie-universal-nuxt',
     ],
 
     publicRuntimeConfig: {
