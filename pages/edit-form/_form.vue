@@ -4,7 +4,7 @@
         <h1>{{ title }}</h1>
         <MarkdownEditor title="Form Description" :text="description" @save="updateDescription"></MarkdownEditor>
         <MarkdownEditor title="Message on Completion" :text="completed.text" @save="updateCompleted"></MarkdownEditor>
-               <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
+        <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
         <br><br>
 
         <v-switch v-model="completed.allowDownload" class="ma-2" label="Allow reporter to download PDF?" @change="updateCompleted"></v-switch>
@@ -111,8 +111,9 @@ export default {
             });
         },
 
-        updateCompleted() {
+        updateCompleted(completed) {
             let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
+            this.completed.text = completed;
             axios.patch(url, this.completed).then((response) => {
                 //TODO: Handle errors
             });
