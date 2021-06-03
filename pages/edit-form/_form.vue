@@ -101,6 +101,8 @@ export default {
                 this.editJSON = d.data.sectionLogic;
                 this.currentTab = this.editJSON.length > 0 ? 1 : 0;
                 this.currentSection = this.currentTab;
+            }).catch((err) => {
+                //TODO: Implement catches in all axios places (especially fetchData)
             })
         },
 

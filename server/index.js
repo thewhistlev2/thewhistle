@@ -68,6 +68,11 @@ async function start() {
         }
     }
 
+    process.on('unhandledRejection', (reason, p) => {
+        //console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+        // application specific logging, throwing an error, or other logic here
+    });
+
     consola.ready({
         message: `Server listening on http://${host}:${port}`,
         badge: true
