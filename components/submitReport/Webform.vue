@@ -80,8 +80,10 @@ export default {
         },
 
         showNextSection(section) {
-            this.questionsKey++; //Incrementing key rerenders component (necessary for Typeform)
-            this.currentSection = section;
+            this.questionsKey++; //Incrementing key rerenders component (necessary for multiple Typeform sections)
+            this.currentSection = section.json;
+            this.currentSection.id = section.id;
+            this.currentSection.type = section.type;
         }
     }
 
