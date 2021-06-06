@@ -12,7 +12,7 @@
 export default {
     methods: {
         save(text) {
-            if (this.$attrs.allowSave) {
+            if (text.length > 0 && this.$attrs.allowSave) {
                 this.$emit('save', text);
             }
         }
