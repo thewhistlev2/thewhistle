@@ -50,8 +50,8 @@ export default {
 
     methods: {
         validEnding(email) {
+            console.log(this.$attrs.section);
             if (this.$attrs.section.json) {
-                console.log(this.$attrs.section);
                 if (this.$attrs.section.json.allowedEndings) {
                     if (this.$attrs.section.json.allowedEndings.length == 0) {
                         return true;
