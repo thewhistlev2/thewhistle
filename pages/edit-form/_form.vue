@@ -2,8 +2,8 @@
     <div>
         
         <h1>{{ title }}</h1>
-        <MarkdownEditor title="Form Description" :text="description" @save="updateDescription"></MarkdownEditor>
-        <MarkdownEditor title="Message on Completion" :text="completed.text" @save="updateCompleted"></MarkdownEditor>
+        <MarkdownEditor title="Form Description" :text="description" :allowSave="fetchedData" @save="updateDescription"></MarkdownEditor>
+        <MarkdownEditor title="Message on Completion" :text="completed.text" :allowSave="fetchedData" @save="updateCompletedText"></MarkdownEditor>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
         <br><br>
 
@@ -109,22 +109,22 @@ export default {
         },
 
         updateDescription(description) {
-            if (this.fetchedData) {
-                let url = `/api/edit-form/${this.$route.params.form}/update-description`;
-                axios.patch(url, { description: description }).then((response) => {
-                    //TODO: Handle errors
-                });
-            }
+            let url = `/api/edit-form/${this.$route.params.form}/update-description`;
+            axios.patch(url, { description: description }).then((response) => {
+                //TODO: Handle errors
+            });
         },
 
-        updateCompleted(completed) {
-            if (this.fetchedData) {
-                let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
-                this.completed.text = completed;
-                axios.patch(url, this.completed).then((response) => {
-                    //TODO: Handle errors
-                });
-            }
+        updateCompletedText(text) {
+            this.completed.text = text;
+            this.updateCompleted();
+        },
+
+        updateCompleted() {
+            let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
+            axios.patch(url, this.completed).then((response) => {
+                //TODO: Handle errors
+            });
         },
 
         openAddSectionModal(index) {
