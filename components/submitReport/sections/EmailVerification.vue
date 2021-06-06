@@ -51,6 +51,7 @@ export default {
     methods: {
         validEnding(email) {
             if (this.$attrs.section.json) {
+                console.log(this.$attrs.section.prompt);
                 if (this.$attrs.section.json.allowedEndings) {
                     if (this.$attrs.section.json.allowedEndings.length == 0) {
                         return true;

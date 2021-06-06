@@ -109,7 +109,6 @@ export default {
         },
 
         updateDescription(description) {
-            console.log('KIT', description, this.fetchedData);
             let url = `/api/edit-form/${this.$route.params.form}/update-description`;
             axios.patch(url, { description: description }).then((response) => {
                 //TODO: Handle errors
@@ -122,7 +121,6 @@ export default {
         },
 
         updateCompleted() {
-            console.log('PUP', this.completed, this.fetchedData);
             let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
             axios.patch(url, this.completed).then((response) => {
                 //TODO: Handle errors
