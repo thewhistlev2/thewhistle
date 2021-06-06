@@ -342,9 +342,10 @@ exports.getFormFromSlug = async function (slug, test) {
 }
 
 exports.updateDescription = async function(slug, description) {
-    let query = `UPDATE forms SET description='${description}' WHERE slug='${slug}'`;
+    let query = `UPDATE forms SET description=$1 WHERE slug='${slug}'`;
+    let values = [ description ];
     try {
-        await db.query(query);
+        await db.query(query, values);
     } catch (err) {
         throw new DBUpdateError('forms', query, err);
     }
