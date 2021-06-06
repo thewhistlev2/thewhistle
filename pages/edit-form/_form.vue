@@ -77,7 +77,8 @@ export default {
                 allReports: true,
                 index: 0
             },
-            currentSection: null
+            currentSection: null,
+            fetchedData: false
         }
     },
 
@@ -101,24 +102,29 @@ export default {
                 this.editJSON = d.data.sectionLogic;
                 this.currentTab = this.editJSON.length > 0 ? 1 : 0;
                 this.currentSection = this.currentTab;
+                this.fetchedData = true;
             }).catch((err) => {
                 //TODO: Implement catches in all axios places (especially fetchData)
             })
         },
 
         updateDescription(description) {
-            let url = `/api/edit-form/${this.$route.params.form}/update-description`;
-            axios.patch(url, { description: description }).then((response) => {
-                //TODO: Handle errors
-            });
+            if (this.fetchedData) {
+                let url = `/api/edit-form/${this.$route.params.form}/update-description`;
+                axios.patch(url, { description: description }).then((response) => {
+                    //TODO: Handle errors
+                });
+            }
         },
 
         updateCompleted(completed) {
-            let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
-            this.completed.text = completed;
-            axios.patch(url, this.completed).then((response) => {
-                //TODO: Handle errors
-            });
+            if (this.fetchedData) {
+                let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
+                this.completed.text = completed;
+                axios.patch(url, this.completed).then((response) => {
+                    //TODO: Handle errors
+                });
+            }
         },
 
         openAddSectionModal(index) {
