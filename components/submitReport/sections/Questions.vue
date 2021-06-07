@@ -28,7 +28,7 @@ export default {
 
     methods: {
         displayTypeform() {
-            const url = `${this.$attrs.section.json._links.display}?session=${this.$attrs.sessionID}`;
+            const url = `${this.$attrs.section._links.display}?session=${this.$attrs.sessionID}`;
             var el = document.getElementById('embedded-typeform');
             //TODO: Make this run on start report event
             // When instantiating a widget embed, you must provide the DOM element

@@ -1,6 +1,7 @@
 <template>
     <div>
         <div v-if="!startedReport">
+            <br>
             <VueMarkdown :anchorAttributes="{target:'_blank'}">{{$attrs.form.description}}</VueMarkdown>
             <br>
             <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
@@ -66,13 +67,9 @@ export default {
                 .then((response) => {
                     this.sessionID = response.data.sessionID; //TODO: Make this session ID instead of report ID
                     this.startedReport = true;
-                    if (response.data.nextSection.type == 'Questions') {
-                        this.currentSection = response.data.nextSection;
-                    } else {
-                        this.currentSection = response.data.nextSection.json;
-                        this.currentSection.id = response.data.nextSection.id;
-                        this.currentSection.type = response.data.nextSection.type;
-                    }
+                    this.currentSection = response.data.nextSection.json;
+                    this.currentSection.id = response.data.nextSection.id;
+                    this.currentSection.type = response.data.nextSection.type;
                 })
                 .catch((response) => {
                     //TODO: Check response
