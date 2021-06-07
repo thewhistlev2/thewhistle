@@ -39,7 +39,7 @@ export default {
             validEmail: false,
             validCode: false,
             incorrectVerificationCode: false,
-            emailRules: [(v) => this.isValidEmail(v) || 'Invalid email address', (v) => this.validEnding(v) || !this.$attrs.section.json.allowedEndings || ('Email ending must match ' + this.$attrs.section.json.allowedEndings.join(', ')) ],
+            emailRules: [(v) => this.isValidEmail(v) || 'Invalid email address', (v) => this.validEnding(v) || !this.$attrs.section.allowedEndings || ('Email ending must match ' + this.$attrs.section.allowedEndings.join(', ')) ],
             verificationCodeRules: [(v) => v.length == 6 || 'Must be 6 characters long', (v) => this.isAlphanumeric(this.verificationCode) || 'Must only contain letters and numbers']
         }
     },
@@ -50,13 +50,13 @@ export default {
 
     methods: {
         validEnding(email) {
-            if (this.$attrs.section.json) {
-                if (this.$attrs.section.json.allowedEndings) {
-                    if (this.$attrs.section.json.allowedEndings.length == 0) {
+            if (this.$attrs.section) {
+                if (this.$attrs.section.allowedEndings) {
+                    if (this.$attrs.section.allowedEndings.length == 0) {
                         return true;
                     } else {
-                        for (let i = 0; i < this.$attrs.section.json.allowedEndings.length; i++) {
-                            if (email.endsWith(this.$attrs.section.json.allowedEndings[i])) {
+                        for (let i = 0; i < this.$attrs.section.allowedEndings.length; i++) {
+                            if (email.endsWith(this.$attrs.section.allowedEndings[i])) {
                                 return true;
                             }
                         }
