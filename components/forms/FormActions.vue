@@ -6,7 +6,7 @@
         <v-btn :to="reportsURL" class="blueBtn" text>View Reports</v-btn>
         <template v-if="canEdit">
             <v-btn :to="editURL" class="blueBtn" text>Edit</v-btn>
-            <v-btn v-if="!$attrs.form.published" v-on:click="showPublishModal = true" class="blueBtn" text>Publish</v-btn>
+            <v-btn v-on:click="showPublishModal = true" class="blueBtn" text>Publish</v-btn>
             <v-btn v-on:click="showDeleteModal = true" class="blueBtn" text>Delete</v-btn>
             <FormPublishModal :show="showPublishModal" @publish="publish" @close="closePublishModal" :formSlug="this.$attrs.form.slug" :formTitle="this.$attrs.form.title" />
             <FormDeleteModal :show="showDeleteModal" @close="closeDeleteModal" :formSlug="this.$attrs.form.slug" :formTitle="this.$attrs.form.title" />
