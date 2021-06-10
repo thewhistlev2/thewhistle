@@ -123,7 +123,7 @@ export default {
         updateCompleted() {
             let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
             axios.patch(url, this.completed).then((response) => {
-                //TODO: Handle errors
+                //TODO: Handle error
             });
         },
 

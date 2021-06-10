@@ -15,6 +15,8 @@ function requiresVerification(path) {
         return false;
     } else if (path == '/api/auth/resend-code') {
         return false;
+    } else if (path.startsWith('/api/auth/validate-password-token/')) {
+        return false;
     } else if (path == '/api/session/download-pdf') {
         return false;
     } else if (path == '/favicon.ico') {

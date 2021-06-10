@@ -2,8 +2,9 @@ const bcrypt = require('bcrypt')
 
 const db = require('../db.ts')
 const Users = require('./users.js')
-const { UserAuthenticationError, MaxIncorrect2FAError } = require('../utils/errors/errors.js')
+const { UserAuthenticationError, MaxIncorrect2FAError, DBSelectionError } = require('../utils/errors/errors.js')
 const Email = require('../utils/email.js')
+const { flattenDiagnosticMessageText } = require('typescript')
 
 exports.serializeUser = function (user, done) {
     return done(null, user.id)
@@ -157,5 +158,26 @@ exports.authenticate2FA = async function (userID, testVerificationCode) {
             throw err;
         }
         throw new UserAuthenticationError(err);
+    }
+}
+
+exports.validatePasswordToken = async function (userID, passwordToken) {
+    const query = 'SELECT * FROM passwordtokens WHERE user_id=$1';
+    let token = {};
+    try {
+        const results = await db.query(query, [ userID ]);
+        token = results.rows[0];
+    } catch (err) {
+        throw new DBSelectionError('passwordtokens', query, err);
+    }
+    if (!token) {
+        return false;
+    }
+    const match = await bcrypt.compare(passwordToken, token.token_hash);
+    if (match) {
+        let expirationDate = new Date(token.expiration);
+        return Date.now() < expirationDate.getTime();
+    } else {
+        return false;
     }
 }

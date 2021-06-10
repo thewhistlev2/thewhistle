@@ -16,7 +16,7 @@ async function hashString(str) {
 }
 
 async function generatePasswordToken(userID, expirationTime) {
-    const token = crypto.randomBytes(64).toString('hex');
+    const token = crypto.randomBytes(48).toString('hex');
     const tokenHash = await hashString(token);
     const expirationDate = new Date(Date.now() + expirationTime);
     const query = `INSERT INTO passwordtokens(user_id, token_hash, expiration, used) VALUES($1, $2, $3, false)`;
@@ -131,7 +131,7 @@ exports.createUser = async function (user) {
     }
 
     let passwordToken = await generatePasswordToken(user.id, 1000*60*60*24*7);
-    let setPasswordURL = `${process.env.BASE_URL}auth/set-password/${passwordToken}`;
+    let setPasswordURL = `${process.env.BASE_URL}auth/set-password/${user.id}${passwordToken}`;
     let subject = `Welcome to The Whistle ${user.firstName}`;
     let body = `Hi ${user.firstName} ${user.surname},\n\nSomeone has created an account for you on The Whistle platform. Please use this link to finish setting up your account: ${setPasswordURL}.\n\nThis link will expire in 7 days.\n\nMany thanks,\nThe Whistle Team`;
     await Email.send(user.email, subject, body);

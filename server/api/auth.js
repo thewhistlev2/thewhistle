@@ -22,6 +22,8 @@ router.post('/resend-code', sendVerificationEmail);
 
 router.post('/verification-code', authenticateVerificationCode);
 
+router.get('/validate-password-token/:token', validatePasswordToken);
+
 router.post('/logout', (req, res, next) => {
     try {
         res.clearCookie('authtoken');
@@ -107,6 +109,21 @@ async function authenticateVerificationCode(req, res, next) {
             res.send('Could not authorise you, please try again.');
             next(err);
         }
+    }
+}
+
+async function validatePasswordToken(req, res, next) {
+    try {
+        let token = req.params.token;
+        let passwordToken = token.slice(-96);
+        let userID = token.slice(0, -96);
+        let validToken = await Auth.validatePasswordToken(userID, passwordToken);
+        res.status(200);
+        res.json({ validToken: validToken, user: userID });
+    } catch (err) {
+        res.status(401);
+        res.send('Could not validate password token.');
+        next(err);
     }
 }
 

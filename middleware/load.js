@@ -69,6 +69,14 @@ export default async function (context) {
         }
     }
 
+    if (path.startsWith('/set-password/') && params.hasOwnProperty('token')) {
+        try {
+            context.validToken = await Pages.validatePasswordToken(params.token, context.$axios);
+        } catch (err) {
+            console.error('Error validating set password token');
+        }
+    }
+
     // TODO - change conditions for path
     if (params.hasOwnProperty('htmlform')) {
         try {

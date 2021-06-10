@@ -41,6 +41,17 @@ class Pages {
         }
     }
 
+    static async validatePasswordToken(token, $axios) {
+        try {
+            const url = `api/auth/validate-password-token/${token}`;
+            const response = await $axios.get(url);
+            return response.data;
+        } catch (err) {
+            console.log(err)
+            console.error('Error validating token')
+        }
+    }
+
     static async loadErrors($axios) {
         const url = 'api/errors';
         const errors = await $axios.get(url);
