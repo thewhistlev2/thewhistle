@@ -119,7 +119,7 @@ async function validatePasswordToken(req, res, next) {
         let userID = token.slice(0, -96);
         let validToken = await Auth.validatePasswordToken(userID, passwordToken);
         res.status(200);
-        res.json({ validToken: validToken, user: userID });
+        res.json({ validToken: validToken });
     } catch (err) {
         res.status(401);
         res.send('Could not validate password token.');
