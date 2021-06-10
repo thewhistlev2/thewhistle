@@ -19,9 +19,6 @@
                                     <v-text-field v-model="$attrs.user.email" :rules="validEmail" label="Email" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field type="password" v-model="$attrs.user.password" :rules="validPassword" label="Password" required></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
                                     <v-select v-model="$attrs.user.orgs" :items="$attrs.orgOptions" item-text="name" return-object chips label="Organisations" multiple></v-select>
                                 </v-col>
                                 <v-col v-for="org in $attrs.user.orgs" :key="org.id" cols="12">

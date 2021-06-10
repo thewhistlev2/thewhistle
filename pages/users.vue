@@ -39,7 +39,6 @@ export default {
                 firstName: '',
                 surname: '',
                 email: '',
-                password: '',
                 orgs: []
             }
         }

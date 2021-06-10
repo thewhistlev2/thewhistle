@@ -1,11 +1,33 @@
 const db = require('../db.ts')
+const Email = require('../utils/email.js')
 
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { DBSelectionError, DBInsertionError, DBUpdateError } = require('../utils/errors/errors');
 const { set } = require('core-js/fn/reflect');
 
 // TODO - combine the users.js API functions with this file
 
+async function hashString(str) {
+    let salt = await bcrypt.genSalt();
+    let hash = await bcrypt.hash(str, salt);
+    return hash;
+}
+
+async function generatePasswordToken(userID, expirationTime) {
+    const token = crypto.randomBytes(64).toString('hex');
+    const tokenHash = await hashString(token);
+    const expirationDate = new Date(Date.now() + expirationTime);
+    const query = `INSERT INTO passwordtokens(user_id, token_hash, expiration, used) VALUES($1, $2, $3, false)`;
+    const values = [userID, tokenHash, expirationDate];
+    try {
+        await db.query(query, values);
+        return token;
+    } catch (err) {
+        throw new DBInsertionError('passwordtokens', query, values, err);
+    }
+}
 
 exports.getUserOrgs = async function (userID) {
     let query = `SELECT organisations.id, organisations.name, organisations.active, organisations.slug, userorgs.role FROM organisations JOIN userorgs ON organisations.id=userorgs.organisation WHERE userorgs.user=${userID}`;
@@ -84,36 +106,35 @@ exports.getUser = async function (userID) {
     }
 }
 
-async function hashPassword(password) {
-    let salt = await bcrypt.genSalt();
-    let hash = await bcrypt.hash(password, salt);
-    return hash;
-}
-
-exports.hash = hashPassword;
+exports.hash = hashString;
 
 exports.createUser = async function (user) {
-    let hash = await hashPassword(user.password);
 
-    let query = `INSERT INTO users(first_name, surname, email, password) VALUES($1, $2, $3, $4) RETURNING id`;
-    let values = [user.firstName, user.surname, user.email, hash];
+    let query = `INSERT INTO users(first_name, surname, email) VALUES($1, $2, $3) RETURNING id`;
+    let values = [user.firstName, user.surname, user.email];
     let results = {};
     try {
         results = await db.query(query, values);
     } catch (err) {
         throw new DBInsertionError('users', query, values, err);
     }
-    const userID = results.rows[0].id;
+    user.id = results.rows[0].id;
 
     for (let i = 0; i < user.orgs.length; i++) {
         query = `INSERT INTO userorgs("user", organisation, "role") VALUES($1, $2, $3)`;
-        values = [userID, user.orgs[i].id, user.orgs[i].role];
+        values = [user.id, user.orgs[i].id, user.orgs[i].role];
         try {
             await db.query(query, values);
         } catch (err) {
             throw new DBInsertionError('userorgs', query, values, err);
         }
     }
+
+    let passwordToken = await generatePasswordToken(user.id, 1000*60*60*24*7);
+    let setPasswordURL = `${process.env.BASE_URL}auth/set-password/${passwordToken}`;
+    let subject = `Welcome to The Whistle ${user.firstName}`;
+    let body = `Hi ${user.firstName} ${user.surname},\n\nSomeone has created an account for you on The Whistle platform. Please use this link to finish setting up your account: ${setPasswordURL}.\n\nThis link will expire in 7 days.\n\nMany thanks,\nThe Whistle Team`;
+    await Email.send(user.email, subject, body);
 }
 
 exports.addVerificationCode = async function (userID, verificationCode) {
