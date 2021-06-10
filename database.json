@@ -36,6 +36,16 @@
     "ssl": "true"
   },
 
+  "production": {
+    "driver": "pg",
+    "user": { "ENV": "PRODUCTION_DATABASE_USER" },
+    "password": { "ENV": "PRODUCTION_DATABASE_PASSWORD" },
+    "host": { "ENV": "PRODUCTION_DATABASE_HOST" },
+    "database": { "ENV": "PRODUCTION_DATABASE_NAME" },
+    "schema": "my_schema",
+    "ssl": "true"
+  },
+
   "test": {
     "driver": "sqlite3",
     "filename": ":memory:"

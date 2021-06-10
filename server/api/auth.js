@@ -58,6 +58,7 @@ async function sendVerificationEmail(req, res, next) {
     try {
         const user = await Auth.authenticateUser(req.body.email, req.body.password);
         if (!user) {
+            console.error('NO USER', req.body.email, req.body.password);
             res.status(401)
             res.send('Incorrect email/password')
             return;
@@ -68,6 +69,7 @@ async function sendVerificationEmail(req, res, next) {
         res.status(200);
         res.send('Correct email/password combination.');
     } catch (err) {
+        console.error('WENT WRONG', JSON.stringify(err));
         res.status(401);
         res.send('Could not authorise you, please try again.');
         next(err);
