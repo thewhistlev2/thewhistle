@@ -533,6 +533,25 @@ exports.generateInitialSectionQueue = async function (formID, test) {
     return sectionQueue;
 }
 
+exports.getOrderedRefs = async function (formID, test) {
+    let sectionLogic = await getSectionLogicFromForm(formID, test);
+    let sections = sectionLogic.sections.map(s => s.sectionID);
+    let sectionJSON = {};
+    let orderedRefs = [];
+    for (let i = 0; i < sections.length; i++) {
+        sectionJSON = await getSectionJSON(sections[i], test);
+        if (sectionJSON.type == 'Reporter Number') {
+            orderedRefs.push('usedBefore');
+        } else if (sectionJSON.type == 'Questions') {
+            let fields = sectionJSON.form.fields;
+            for (let j = 0; j < fields.length; j++) {
+                orderedRefs.push(fields[j].ref);
+            }
+        }
+    }
+    return orderedRefs;
+}
+
 async function getCompleted(formID) {
     let query = `SELECT id FROM formsections WHERE form='${formID}' AND type='Completed'`;
     let results = {};

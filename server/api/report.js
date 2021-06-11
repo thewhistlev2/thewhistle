@@ -116,7 +116,7 @@ async function postWebhook(req, res, next) {
 function getReport(req, res, next) {
     try {
         let responses = report.getResponses(req.params.id);
-        let formSlug = report.getFormSlug(req.params.id);
+        let formSlug = report.getForm(req.params.id);
         let metadata = report.getMetadata(req.params.id);
         let notes = report.getNotes(req.params.id);
         let audit = report.getAudit(req.params.id);
@@ -131,7 +131,7 @@ function getReport(req, res, next) {
             .then( data => {
                 const ret = {
                     responses: data[0],
-                    formSlug: data[1],
+                    formSlug: data[1].slug,
                     metadata: data[2],
                     notes: data[3],
                     audit: data[4],

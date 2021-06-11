@@ -2,6 +2,7 @@ const db = require('../db.ts');
 const { InvalidReporterError, DBInsertionError, DBSelectionError, DBUpdateError } = require('../utils/errors/errors.js');
 const users = require('./users.js');
 const session = require('./session.js');
+const Forms = require('./forms');
 
 async function getFormFromSection(sectionID) {
     //TODO: Remove if not needed
@@ -92,26 +93,45 @@ exports.submitTypeformSection = async function (sectionID, payload) {
     }
 }
 
-exports.getResponses = async function (reportID) {
-    let query = `SELECT * FROM questionresponses where report=${reportID}`;
-    try {
-        //TODO: Check ID change still works
-        const responses = await db.query(query)
-        return responses.rows;
-    } catch (err) {
-        throw new DBSelectionError('questionresponses', query, err)
-    }
-}
-
-exports.getFormSlug = async function (reportID) {
-    let query = `SELECT slug FROM forms JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`;
+async function getForm(reportID) {
+    let query = `SELECT slug, forms.id AS form_id, reports.test AS test FROM forms JOIN reports ON reports.form=forms.id WHERE reports.id=${parseInt(reportID)}`;
     try {
         const slugs = await db.query(query)
-        return slugs.rows[0].slug;
+        return slugs.rows[0];
     } catch (err) {
         throw new DBSelectionError('forms', query, err);
     }
 }
+
+exports.getForm = getForm;
+
+exports.getResponses = async function (reportID) {
+    
+    let query = `SELECT * FROM questionresponses where report=${reportID}`;
+    let responses = {};
+    try {
+        //TODO: Check ID change still works
+        const results = await db.query(query)
+        responses = results.rows;
+        
+    } catch (err) {
+        throw new DBSelectionError('questionresponses', query, err)
+    }
+    let form = await getForm(reportID);
+    let orderedRefs = await Forms.getOrderedRefs(form.form_id, form.test);
+    let ret = [];
+    for (let i = 0; i < orderedRefs.length; i++) {
+        for (let j = 0; j < responses.length; j++) {
+            if (orderedRefs[i] == responses[j].question_ref) {
+                ret.push(responses[j]);
+                break;
+            }
+        }
+    }
+    return ret;
+}
+
+
 
 exports.getMetadata = async function (reportID) {
     let query = `SELECT reports.date, reports.status, reports.tags, reports.active, reports.location, reports.reporter, assigned_to FROM reports WHERE reports.id=${parseInt(reportID)}`;
