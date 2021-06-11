@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 
 const db = require('../db.ts')
 const Users = require('./users.js')
-const { UserAuthenticationError, MaxIncorrect2FAError, DBSelectionError } = require('../utils/errors/errors.js')
+const { UserAuthenticationError, MaxIncorrect2FAError, DBSelectionError, DBDeleteError } = require('../utils/errors/errors.js')
 const Email = require('../utils/email.js')
 const { flattenDiagnosticMessageText } = require('typescript')
 
@@ -165,7 +165,7 @@ exports.validatePasswordToken = async function (userID, passwordToken) {
     const query = 'SELECT * FROM passwordtokens WHERE user_id=$1';
     let token = {};
     try {
-        const results = await db.query(query, [ userID ]);
+        const results = await db.query(query, [ parseInt(userID) ]);
         token = results.rows[0];
     } catch (err) {
         throw new DBSelectionError('passwordtokens', query, err);
@@ -179,5 +179,15 @@ exports.validatePasswordToken = async function (userID, passwordToken) {
         return Date.now() < expirationDate.getTime();
     } else {
         return false;
+    }
+}
+
+exports.deletePasswordToken = async function (userID) {
+    let query = 'DELETE FROM passwordtokens WHERE user_id = $1';
+    let values = [ userID ];
+    try {
+        await db.query(query, values);
+    } catch (err) {
+        throw new DBDeleteError('passwordtokens', query, values, err);
     }
 }

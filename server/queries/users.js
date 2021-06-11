@@ -19,7 +19,7 @@ async function generatePasswordToken(userID, expirationTime) {
     const token = crypto.randomBytes(48).toString('hex');
     const tokenHash = await hashString(token);
     const expirationDate = new Date(Date.now() + expirationTime);
-    const query = `INSERT INTO passwordtokens(user_id, token_hash, expiration, used) VALUES($1, $2, $3, false)`;
+    const query = `INSERT INTO passwordtokens(user_id, token_hash, expiration) VALUES($1, $2, $3)`;
     const values = [userID, tokenHash, expirationDate];
     try {
         await db.query(query, values);
@@ -131,7 +131,7 @@ exports.createUser = async function (user) {
     }
 
     let passwordToken = await generatePasswordToken(user.id, 1000*60*60*24*7);
-    let setPasswordURL = `${process.env.BASE_URL}auth/set-password/${user.id}${passwordToken}`;
+    let setPasswordURL = `${process.env.BASE_URL}set-password/${user.id}${passwordToken}`;
     let subject = `Welcome to The Whistle ${user.firstName}`;
     let body = `Hi ${user.firstName} ${user.surname},\n\nSomeone has created an account for you on The Whistle platform. Please use this link to finish setting up your account: ${setPasswordURL}.\n\nThis link will expire in 7 days.\n\nMany thanks,\nThe Whistle Team`;
     await Email.send(user.email, subject, body);
@@ -151,6 +151,18 @@ exports.setAttempts = async function (userID, attempts) {
     let query = `UPDATE users SET login_attempts=${attempts}${setVerificationCode} WHERE id='${userID}'`;
     try {
         await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('users', query, err);
+    }
+}
+
+exports.setPassword = async function (userID, password) {
+    let salt = await bcrypt.genSalt();
+    let passwordHash = await bcrypt.hash(password, salt);
+    let query = `UPDATE users SET password = $1 WHERE id = $2`
+    let values = [ passwordHash, userID ];
+    try {
+        await db.query(query, values);
     } catch (err) {
         throw new DBUpdateError('users', query, err);
     }

@@ -24,8 +24,7 @@ exports.up = function (db: any, callback: any): void {
             },
             user_id: 'int',
             token_hash: 'string',
-            expiration: 'datetime',
-            used: 'boolean'
+            expiration: 'datetime'
         },
         addUserForeignKey
     );

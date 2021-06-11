@@ -31,6 +31,12 @@ class DBUpdateError extends WhistleError {
     }
 }
 
+class DBDeleteError extends WhistleError {
+    constructor(table, query, values, err) {
+        super(`Error deleting data in the ${table} table. Executing query '${query}' with values ${values}.\n${err.message}`);
+    }
+}
+
 class UserAuthenticationError extends WhistleError {
     constructor(err) {
         super(`Error authenticating user.\n${err.message}`, 'UserAuthenticationError');
@@ -78,6 +84,7 @@ exports.InvalidReporterError = InvalidReporterError;
 exports.DBInsertionError = DBInsertionError;
 exports.DBSelectionError = DBSelectionError;
 exports.DBUpdateError = DBUpdateError;
+exports.DBDeleteError = DBDeleteError;
 exports.UserAuthenticationError = UserAuthenticationError;
 exports.TypeformUpdateError = TypeformUpdateError;
 exports.TypeformWebhookError = TypeformWebhookError;

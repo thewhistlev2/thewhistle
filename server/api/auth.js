@@ -1,4 +1,5 @@
 const Auth = require('../queries/auth');
+const User = require('../queries/users');
 const bcrypt = require('bcrypt');
 const express = require('express');
 //TODO: Change requires to imports everywhere
@@ -23,6 +24,8 @@ router.post('/resend-code', sendVerificationEmail);
 router.post('/verification-code', authenticateVerificationCode);
 
 router.get('/validate-password-token/:token', validatePasswordToken);
+
+router.patch('/set-password', setPassword);
 
 router.post('/logout', (req, res, next) => {
     try {
@@ -119,6 +122,31 @@ async function validatePasswordToken(req, res, next) {
         let userID = token.slice(0, -96);
         let validToken = await Auth.validatePasswordToken(userID, passwordToken);
         res.status(200);
+        res.json({ validToken: validToken });
+    } catch (err) {
+        res.status(401);
+        res.send('Could not validate password token.');
+        next(err);
+    }
+}
+
+async function setPassword(req, res, next) {
+    try {
+        let token = req.body.token;
+        let passwordToken = token.slice(-96);
+        let userID = token.slice(0, -96);
+        let validToken = await Auth.validatePasswordToken(userID, passwordToken);
+        if (validToken) {
+            let password = req.body.password;
+            await Auth.deletePasswordToken(userID);
+            await User.setPassword(userID, password);
+            res.status(200);
+            res.send();
+        } else {
+            res.status(401)
+            res.send('Could not set password.')
+        }
+        
         res.json({ validToken: validToken });
     } catch (err) {
         res.status(401);

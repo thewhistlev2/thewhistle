@@ -47,7 +47,6 @@ class Pages {
             const response = await $axios.get(url);
             return response.data;
         } catch (err) {
-            console.log(err)
             console.error('Error validating token')
         }
     }
