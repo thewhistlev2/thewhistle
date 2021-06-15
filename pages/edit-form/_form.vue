@@ -23,9 +23,11 @@
             <v-tabs-items v-model="currentTab">
                 <v-tab-item v-for="tab in tabs" :key="tab.key">
                     <template v-if="tab.isSection">
+                        <MarkdownEditor title="Section Header" :text="tab.section.header" :allowSave="fetchedData" @save="updateHeader(tab.section.sectionID, tab.section.header)"></MarkdownEditor>
                         <EditQuestionSection v-if="tab.section.type == 'Questions'" :section="tab.section" :web="web" />
                         <EditEmailVerificationSection v-if="tab.section.type == 'Email Verification'" :section="tab.section" :web="web" :title="title" />
                         <EditReporterNumberSection v-if="tab.section.type == 'Reporter Number'" :section="tab.section" :web="web" />
+                        <MarkdownEditor title="Section Footer" :text="tab.section.footer" :allowSave="fetchedData" @save="updateFooter(tab.section.sectionID, tab.section.footer)"></MarkdownEditor>
                     </template>
                 </v-tab-item>
             </v-tabs-items>
@@ -75,7 +77,9 @@ export default {
                 type: '',
                 default: true,
                 allReports: true,
-                index: 0
+                index: 0,
+                header: '',
+                footer: ''
             },
             currentSection: null,
             fetchedData: false
@@ -123,6 +127,20 @@ export default {
         updateCompleted() {
             let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
             axios.patch(url, this.completed).then((response) => {
+                //TODO: Handle error
+            });
+        },
+
+        updateHeader(sectionID, header) {
+            let url = `/api/edit-form/${sectionID}/update-header`;
+            axios.patch(url, { header: header }).then((response) => {
+                //TODO: Handle error
+            });
+        },
+
+        updateFooter(sectionID, footer) {
+            let url = `/api/edit-form/${sectionID}/update-footer`;
+            axios.patch(url, { footer: footer }).then((response) => {
                 //TODO: Handle error
             });
         },
