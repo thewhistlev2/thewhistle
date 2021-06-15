@@ -1,6 +1,7 @@
 <template>
     <div>
         <template v-if="form">
+            <v-img max-height="150" max-width="250" :src="form.image"></v-img>
             <h1 style="text-transform: uppercase;">{{ form.title }} Test</h1>
             <div v-if="form.web">
                 <no-ssr style="height: 100%">

@@ -7,10 +7,12 @@
             <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
         </div>
         <div v-else>
+            <VueMarkdown :anchorAttributes="{target:'_blank'}">{{currentSection.header}}</VueMarkdown>
             <Questions :key="questionsKey" v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></Questions>
             <EmailVerification v-if="currentSection.type == 'Email Verification'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></EmailVerification>
             <ReporterNumber v-if="currentSection.type == 'Reporter Number'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></ReporterNumber>
             <Completed v-if="currentSection.type == 'Completed'" :section="currentSection" :sessionID="sessionID"></Completed>
+            <VueMarkdown :anchorAttributes="{target:'_blank'}">{{currentSection.footer}}</VueMarkdown>
         </div>
     </div>
 </template>
@@ -70,6 +72,8 @@ export default {
                     this.currentSection = response.data.nextSection.json;
                     this.currentSection.id = response.data.nextSection.id;
                     this.currentSection.type = response.data.nextSection.type;
+                    this.currentSection.header = response.data.nextSection.header;
+                    this.currentSection.footer = response.data.nextSection.footer;
                 })
                 .catch((response) => {
                     //TODO: Check response
@@ -81,6 +85,8 @@ export default {
             this.currentSection = section.json;
             this.currentSection.id = section.id;
             this.currentSection.type = section.type;
+            this.currentSection.header = section.header;
+            this.currentSection.footer = section.footer;
         }
     }
 
