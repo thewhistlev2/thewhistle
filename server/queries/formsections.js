@@ -40,9 +40,9 @@ exports.getSection = async function (sectionID, test) {
     return results.rows[0];
 }
 
-exports.insertSection = async function (formID, type, json, testJSON, allReports) {
-    const query = 'INSERT INTO formsections (form, type, json, test_json, all_reports) VALUES ($1, $2, $3, $4, $5) RETURNING id';
-    const values = [formID, type, JSON.stringify(json), JSON.stringify(testJSON), allReports];
+exports.insertSection = async function (formID, type, json, testJSON, allReports, header, footer) {
+    const query = 'INSERT INTO formsections (form, type, json, test_json, all_reports, header, footer) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id';
+    const values = [formID, type, JSON.stringify(json), JSON.stringify(testJSON), allReports, header, footer];
     let results = {};
     try {
         results = await db.query(query, values);
@@ -81,6 +81,26 @@ exports.updateJSON = async function (sectionID, json) {
     let query = `UPDATE formsections SET json='${JSON.stringify(json)}' WHERE id='${sectionID}'`;
     try {
         await db.query(query);
+    } catch (err) {
+        throw new DBUpdateError('formsections', query, err);
+    }
+}
+
+exports.updateHeader = async function (sectionID, header) {
+    let query = `UPDATE formsections SET header=$1 WHERE id=$2`;
+    let values = [header, sectionID];
+    try {
+        await db.query(query, values);
+    } catch (err) {
+        throw new DBUpdateError('formsections', query, err);
+    }
+}
+
+exports.updateFooter = async function (sectionID, footer) {
+    let query = `UPDATE formsections SET footer=$1 WHERE id=$2`;
+    let values = [footer, sectionID];
+    try {
+        await db.query(query, values);
     } catch (err) {
         throw new DBUpdateError('formsections', query, err);
     }

@@ -248,7 +248,7 @@ async function getSectionLogicFromForm(formID, test) {
 //Used in edit form
 exports.getEditFormJSON = async function(slug) {
     //TODO: Move some of this to form gen
-    let query = `SELECT test_logic AS logic, forms.title AS title, forms.description AS description, forms.web AS web, forms.id AS form FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
+    let query = `SELECT test_logic AS logic, forms.title AS title, forms.description AS description, forms.web AS web, forms.id AS form, forms.image AS image FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
     let results = {};
     try {
         results = await db.query(query);
@@ -260,8 +260,9 @@ exports.getEditFormJSON = async function(slug) {
     const web = results.rows[0].web;
     const sectionLogic = results.rows[0].logic.sections;
     const formID = results.rows[0].form;
+    const image = results.rows[0].image;
     for (let i = 0; i < sectionLogic.length; i++) {
-        query = `SELECT type, test_json AS json FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
+        query = `SELECT type, test_json AS json, header, footer FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
         try {
             results = await db.query(query);
         } catch (err) {
@@ -269,6 +270,8 @@ exports.getEditFormJSON = async function(slug) {
         }
         sectionLogic[i].title = results.rows[0].json.title;
         sectionLogic[i].type = results.rows[0].type;
+        sectionLogic[i].header = results.rows[0].header;
+        sectionLogic[i].footer = results.rows[0].footer;
         if (sectionLogic[i].type == 'Questions') {
             sectionLogic[i].questions = generateEditJSON(results.rows[0].json);
             sectionLogic[i].completedText = results.rows[0].json.thankyou_screens[0].title;
@@ -285,6 +288,7 @@ exports.getEditFormJSON = async function(slug) {
         description: description,
         completed: completed.form,
         web: web,
+        image: image,
         sectionLogic: sectionLogic
     }
     //TODO: Add in ret example structures documentation
@@ -307,7 +311,7 @@ async function getSectionJSON(sectionID, test) {
 exports.getSectionJSON = getSectionJSON;
 //Used to get /submit-report pages
 exports.getFormFromSlug = async function (slug, test) {
-    let query = `SELECT logic, test_logic, forms.web AS web, forms.title AS title, forms.description AS description, forms.id AS form_id FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
+    let query = `SELECT logic, test_logic, forms.web AS web, forms.title AS title, forms.description AS description, forms.id AS form_id, forms.image AS image FROM formsectionlogic JOIN forms ON forms.id=formsectionlogic.form WHERE forms.slug='${slug}'`;
     let results = {};
     try {
         results = await db.query(query);
@@ -319,9 +323,10 @@ exports.getFormFromSlug = async function (slug, test) {
         const title = results.rows[0].title;
         const description = results.rows[0].description;
         const formID = results.rows[0].form_id;
+        const image = results.rows[0].image;
         const sectionLogic = test ? results.rows[0].test_logic.sections : results.rows[0].logic.sections;
         for (let i = 0; i < sectionLogic.length; i++) {
-            let query = `SELECT type, json, test_json FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
+            let query = `SELECT type, json, test_json, header, footer FROM formsections WHERE id=${sectionLogic[i].sectionID}`;
             try {
                 results = await db.query(query);
             } catch (err) {
@@ -329,6 +334,8 @@ exports.getFormFromSlug = async function (slug, test) {
             }
             sectionLogic[i].type = results.rows[0].type;
             sectionLogic[i].json = test ? results.rows[0].test_json : results.rows[0].json;
+            sectionLogic[i].header = results.rows[0].header;
+            sectionLogic[i].footer = results.rows[0].footer;
         }
         return {
             web: web,
@@ -336,6 +343,7 @@ exports.getFormFromSlug = async function (slug, test) {
             slug: slug,
             title: title,
             description: description,
+            image: image,
             sections: sectionLogic
         }
     }
@@ -371,6 +379,16 @@ exports.updateJSON = async function(sectionID, form) {
         throw new DBUpdateError('formsections', query, err);
     }
     return form.type == 'Questions' ? generateEditJSON(form) : form;
+}
+
+exports.updateImage = async function (slug, image) {
+    let query = `UPDATE forms SET image=$1 WHERE slug=$2`;
+    let values = [image, slug];
+    try {
+        await db.query(query, values);
+    } catch (err) {
+        throw new DBUpdateError('forms', query, err);
+    }
 }
 
 exports.getFormIDFromSlug = async function (slug) {
@@ -423,8 +441,8 @@ function generateSectionLogic(sectionID) {
 }
 
 async function insertIntoForms(form) {
-    const query = 'INSERT INTO forms(organisation, title, description, slug, web) VALUES($1, $2, $3, $4, $5) RETURNING id'
-    const values = [form.org, form.title, form.description, form.slug, form.web];
+    const query = 'INSERT INTO forms(organisation, title, description, slug, web, image) VALUES($1, $2, $3, $4, $5, $6) RETURNING id'
+    const values = [form.org, form.title, form.description, form.slug, form.web, form.image];
     let results = {};
     try {
         results = await db.query(query, values);

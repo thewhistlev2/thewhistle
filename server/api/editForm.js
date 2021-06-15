@@ -14,11 +14,17 @@ router.post('/:slug/add-section', addSection);
 
 router.patch('/:slug/update-completed', updateCompleted);
 
+router.patch('/:slug/update-image', updateImage); 
+
 router.patch('/:slug/update-description', updateFormDescription)
 
 router.post('/:slug/publish', publishForm)
 
 router.patch('/:sectionID/update-section', updateSection);
+
+router.patch('/:sectionID/update-header', updateHeader);
+
+router.patch('/:sectionID/update-footer', updateFooter);
 
 router.patch('/:sectionID/update-completed-text', updateCompletedText);
 
@@ -116,6 +122,30 @@ async function updateSection(req, res, next) {
     }
 }
 
+async function updateHeader(req, res, next) {
+    try {
+        await FormSections.updateHeader(req.params.sectionID, req.body.header);
+        res.status(200);
+        res.send();
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update header');
+        next(err);
+    }
+}
+
+async function updateFooter(req, res, next) {
+    try {
+        await FormSections.updateFooter(req.params.sectionID, req.body.header);
+        res.status(200);
+        res.send();
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update header');
+        next(err);
+    }
+}
+
 async function updateCompleted(req, res, next) {
     try {
         //TODO: Input validations
@@ -127,6 +157,19 @@ async function updateCompleted(req, res, next) {
     } catch (err) {
         res.status(500);
         res.send('Could not update section');
+        next(err);
+    }
+}
+
+async function updateImage(req, res, next) {
+    try {
+        //TODO: Input validations
+        await Forms.updateImage(req.params.slug, req.body.image); //TODO: Implement this
+        res.status(200);
+        res.send();
+    } catch (err) {
+        res.status(500);
+        res.send('Could not update image URL');
         next(err);
     }
 }

@@ -475,7 +475,8 @@ exports.createForm = async function (slug, title, description, org, web) {
             title: title,
             description: description,
             org: org,
-            web: web
+            web: web,
+            image: ''
         }
         await Forms.insertForm(form);
     } catch (err) {
@@ -486,7 +487,11 @@ exports.createForm = async function (slug, title, description, org, web) {
 exports.addSection = async function (formSlug, newSection) {
     let json = await generateInitialSectionJSON(newSection.type, newSection.title);
     let formID = await Forms.getFormIDFromSlug(formSlug);
-    let sectionID = await FormSections.insertSection(formID, newSection.type, json.actual, json.test, newSection.allReports); //TODO: Implement this
+    let header = newSection.type == 'Questions' ? 
+        "You can skip questions or go back to previous questions using the up/down arrows (bottom right corner).\nWe won't be able to see any of your responses until you press the submit button at the end. After this, you will be able to download a PDF of your responses."
+        : "";
+    let footer = "If you are experiencing technical difficulties with the report form, you can log them [here](https://forms.gle/oHUFyvRNrRh275qz6).";
+    let sectionID = await FormSections.insertSection(formID, newSection.type, json.actual, json.test, newSection.allReports, header, footer); //TODO: Implement this
     await Forms.addFormSectionLogicSection(newSection.index, formID, sectionID, newSection.default); //TODO: Implement this
     let ret = {
         sectionID: sectionID
