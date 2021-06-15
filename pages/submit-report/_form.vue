@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>{{ form.title }}</h1>
+        <h1 style="text-transform: uppercase;">{{ form.title }}</h1>
         <div v-if="form.web">
                 <no-ssr style="height: 100%">
                     <!-- TODO: Make work for multiple sections and other section types -->

@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="form">
-            <h1>{{ form.title }} Test</h1>
+            <h1 style="text-transform: uppercase;">{{ form.title }} Test</h1>
             <div v-if="form.web">
                 <no-ssr style="height: 100%">
                     <!-- TODO: Make work for multiple sections and other section types -->
