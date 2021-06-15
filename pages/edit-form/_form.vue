@@ -2,6 +2,8 @@
     <div>
         
         <h1>{{ title }}</h1>
+        <v-text-field outlined v-model="image" label="Image URL" v-on:change="updateImage"></v-text-field>
+
         <MarkdownEditor title="Form Description" :text="description" :allowSave="fetchedData" @save="updateDescription"></MarkdownEditor>
         <MarkdownEditor title="Message on Completion" :text="completed.text" :allowSave="fetchedData" @save="updateCompletedText"></MarkdownEditor>
         <v-btn outlined :to="`/submit-test-report/${$route.params.form}`" class="blueBtn">View test form</v-btn>
@@ -69,6 +71,7 @@ export default {
             description: '',
             completed: {},
             web: false,
+            image: '',
             editJSON: [],
             currentTab: null,
             showAddSectionModal: false,
@@ -103,6 +106,7 @@ export default {
                 this.description = d.data.description;
                 this.completed = d.data.completed;
                 this.web = d.data.web;
+                this.image = d.data.image;
                 this.editJSON = d.data.sectionLogic;
                 this.currentTab = this.editJSON.length > 0 ? 1 : 0;
                 this.currentSection = this.currentTab;
@@ -127,6 +131,13 @@ export default {
         updateCompleted() {
             let url = `/api/edit-form/${this.$route.params.form}/update-completed`;
             axios.patch(url, this.completed).then((response) => {
+                //TODO: Handle error
+            });
+        },
+
+        updateImage() {
+            let url = `/api/edit-form/${this.$route.params.form}/update-image`;
+            axios.patch(url, {image: this.image}).then((response) => {
                 //TODO: Handle error
             });
         },
