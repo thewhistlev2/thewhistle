@@ -28,7 +28,7 @@ exports.getSectionsFromSlug = async function (slug) {
 
 exports.getSection = async function (sectionID, test) {
     let jsonField = test ? 'test_json' : 'json';
-    let query = `SELECT id, type, ${jsonField} AS json FROM formsections WHERE id='${sectionID}'`;
+    let query = `SELECT id, type, ${jsonField} AS json, header, footer FROM formsections WHERE id='${sectionID}'`;
     let results = {};
 
     try {

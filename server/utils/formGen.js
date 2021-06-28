@@ -494,7 +494,9 @@ exports.addSection = async function (formSlug, newSection) {
     let sectionID = await FormSections.insertSection(formID, newSection.type, json.actual, json.test, newSection.allReports, header, footer); //TODO: Implement this
     await Forms.addFormSectionLogicSection(newSection.index, formID, sectionID, newSection.default); //TODO: Implement this
     let ret = {
-        sectionID: sectionID
+        sectionID: sectionID,
+        header: header,
+        footer: footer
     };
     if (newSection.type == 'Questions') {
         ret.questions = Forms.generateEditJSON(json.test);

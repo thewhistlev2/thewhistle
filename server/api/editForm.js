@@ -136,7 +136,7 @@ async function updateHeader(req, res, next) {
 
 async function updateFooter(req, res, next) {
     try {
-        await FormSections.updateFooter(req.params.sectionID, req.body.header);
+        await FormSections.updateFooter(req.params.sectionID, req.body.footer);
         res.status(200);
         res.send();
     } catch (err) {

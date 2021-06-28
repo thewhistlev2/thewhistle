@@ -1,8 +1,12 @@
 <template>
     <div>
         <template v-if="form">
-            <v-img max-height="150" max-width="250" :src="form.image"></v-img>
-            <h1 style="text-transform: uppercase;">{{ form.title }} Test</h1>
+            <v-container>
+                <v-row dense>
+                    <v-col sm="2" lg="1" class=".d-none .d-sm-flex"><v-img max-height="100" max-width="100" :src="form.image"></v-img></v-col>
+                    <v-col sm="10" lg="11"><h1 style="text-transform: uppercase;">{{ form.title }} Test</h1></v-col>
+                </v-row>
+            </v-container>
             <div v-if="form.web">
                 <no-ssr style="height: 100%">
                     <!-- TODO: Make work for multiple sections and other section types -->

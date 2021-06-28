@@ -25,11 +25,11 @@
             <v-tabs-items v-model="currentTab">
                 <v-tab-item v-for="tab in tabs" :key="tab.key">
                     <template v-if="tab.isSection">
-                        <MarkdownEditor title="Section Header" :text="tab.section.header" :allowSave="fetchedData" @save="updateHeader(tab.section.sectionID, tab.section.header)"></MarkdownEditor>
+                        <MarkdownEditor title="Section Header" :text="tab.section.header" :allowSave="fetchedData" @save="updateHeader($event, tab.section.sectionID)"></MarkdownEditor>
                         <EditQuestionSection v-if="tab.section.type == 'Questions'" :section="tab.section" :web="web" />
                         <EditEmailVerificationSection v-if="tab.section.type == 'Email Verification'" :section="tab.section" :web="web" :title="title" />
                         <EditReporterNumberSection v-if="tab.section.type == 'Reporter Number'" :section="tab.section" :web="web" />
-                        <MarkdownEditor title="Section Footer" :text="tab.section.footer" :allowSave="fetchedData" @save="updateFooter(tab.section.sectionID, tab.section.footer)"></MarkdownEditor>
+                        <MarkdownEditor title="Section Footer" :text="tab.section.footer" :allowSave="fetchedData" @save="updateFooter($event, tab.section.sectionID)"></MarkdownEditor>
                     </template>
                 </v-tab-item>
             </v-tabs-items>
@@ -142,14 +142,14 @@ export default {
             });
         },
 
-        updateHeader(sectionID, header) {
+        updateHeader(header, sectionID) {
             let url = `/api/edit-form/${sectionID}/update-header`;
             axios.patch(url, { header: header }).then((response) => {
                 //TODO: Handle error
             });
         },
 
-        updateFooter(sectionID, footer) {
+        updateFooter(footer, sectionID) {
             let url = `/api/edit-form/${sectionID}/update-footer`;
             axios.patch(url, { footer: footer }).then((response) => {
                 //TODO: Handle error

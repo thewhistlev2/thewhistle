@@ -2,17 +2,17 @@
     <div>
         <div v-if="!startedReport">
             <br>
-            <VueMarkdown :anchorAttributes="{target:'_blank'}">{{$attrs.form.description}}</VueMarkdown>
+            <VueMarkdown :source="$attrs.form.description" :anchorAttributes="{target:'_blank'}"></VueMarkdown>
             <br>
             <v-btn outlined v-on:click="startReport" class="blueBtn">Start Report</v-btn>
         </div>
         <div v-else>
-            <VueMarkdown :anchorAttributes="{target:'_blank'}">{{currentSection.header}}</VueMarkdown>
+            <VueMarkdown v-if="currentSection.header" :source="currentSection.header" :anchorAttributes="{target:'_blank'}"></VueMarkdown>
             <Questions :key="questionsKey" v-if="currentSection.type == 'Questions'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></Questions>
             <EmailVerification v-if="currentSection.type == 'Email Verification'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></EmailVerification>
             <ReporterNumber v-if="currentSection.type == 'Reporter Number'" :section="currentSection" :sessionID="sessionID" :test="$attrs.test" @complete="showNextSection"></ReporterNumber>
             <Completed v-if="currentSection.type == 'Completed'" :section="currentSection" :sessionID="sessionID"></Completed>
-            <VueMarkdown :anchorAttributes="{target:'_blank'}">{{currentSection.footer}}</VueMarkdown>
+            <VueMarkdown v-if="currentSection.footer" :source="currentSection.footer" :anchorAttributes="{target:'_blank'}"></VueMarkdown>
         </div>
     </div>
 </template>

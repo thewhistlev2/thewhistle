@@ -1,6 +1,6 @@
 <template>
     <div>
-        <VueMarkdown :anchorAttributes="{target:'_blank'}">{{$attrs.section.text}}</VueMarkdown>
+        <VueMarkdown :source="$attrs.section.text" :anchorAttributes="{target:'_blank'}"></VueMarkdown>
         <v-btn v-if="$attrs.section.allowDownload" outlined @click="downloadPDF" class="blueBtn">Download Report PDF</v-btn>
     </div>
 </template>

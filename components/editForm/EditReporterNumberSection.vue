@@ -1,6 +1,5 @@
 <template>
     <div>
-        This section is not currently configurable.
     </div>
 </template>
 <style scoped>
