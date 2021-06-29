@@ -1,7 +1,5 @@
 <template>
     <div>
-        <p style="text-align: left;">You can skip questions or go back to previous questions using the up/down arrows (bottom right corner).</p>
-        <p style="text-align: left;">We won't be able to see any of your responses until you press the submit button at the end. After this, you will be able to download a PDF of your responses.</p>
         <div style="margin: 0 auto; width: 600px;">
             <!-- TODO - ensure height works -->
             <div style="width: 100%; height: 500px;" id="embedded-typeform"></div>
