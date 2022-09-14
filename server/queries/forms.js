@@ -372,7 +372,7 @@ exports.updatePublished = async function(slug, published) {
 
 exports.updateJSON = async function(sectionID, form) {
     //TODO: Make work for multiple sections
-    let query = `UPDATE formsections SET test_json='${JSON.stringify(form)}' WHERE id='${sectionID}'`;
+    let query = `UPDATE formsections SET test_json='${JSON.stringify(form).replace("'", "''")}' WHERE id='${sectionID}'`;
     try {
         await db.query(query);
     } catch (err) {
