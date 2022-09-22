@@ -175,6 +175,8 @@ exports.validatePasswordToken = async function (userID, passwordToken) {
         console.log('NO DB MATCH')
         return false;
     }
+    console.log('COMPARING: ', passwordToken);
+    console.log('WITH: ', token.token_hash);
     const match = await bcrypt.compare(passwordToken, token.token_hash);
     if (match) {
         console.log('MATCH')
