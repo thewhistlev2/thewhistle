@@ -168,16 +168,20 @@ exports.validatePasswordToken = async function (userID, passwordToken) {
         const results = await db.query(query, [ parseInt(userID) ]);
         token = results.rows[0];
     } catch (err) {
+        console.log('DB ERROR')
         throw new DBSelectionError('passwordtokens', query, err);
     }
     if (!token) {
+        console.log('NO DB MATCH')
         return false;
     }
     const match = await bcrypt.compare(passwordToken, token.token_hash);
     if (match) {
+        console.log('MATCH')
         let expirationDate = new Date(token.expiration);
         return Date.now() < expirationDate.getTime();
     } else {
+        console.log('UNMATCHING TOKENS')
         return false;
     }
 }

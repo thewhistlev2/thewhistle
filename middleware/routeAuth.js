@@ -20,6 +20,7 @@ function requiresVerification(path) {
     } else if (path.startsWith('/api/auth/validate-password-token/')) {
         return false;
     } else if (path == '/api/auth/set-password') {
+        console.log('NO COOKIE REQUIRED')
         return false;
     } else if (path == '/api/session/download-pdf') {
         return false;

@@ -61,6 +61,8 @@ router.get('/user', async (req, res, next) => {
 
 async function sendVerificationEmail(req, res, next) {
     try {
+        console.log('send?')
+        console.log('data', req.body.email, req.body.password)
         const user = await Auth.authenticateUser(req.body.email, req.body.password);
         if (!user) {
             res.status(401)
@@ -138,17 +140,22 @@ async function setPassword(req, res, next) {
         let validToken = await Auth.validatePasswordToken(userID, passwordToken);
         if (validToken) {
             let password = req.body.password;
+            console.log('DELETING TOKEN')
             await Auth.deletePasswordToken(userID);
+            console.log('SETTING PASSWORD')
             await User.setPassword(userID, password);
             res.status(200);
             res.send();
         } else {
+            console.log('TOKEN: ', token);
             res.status(401)
             res.send('Could not set password.')
         }
         
         res.json({ validToken: validToken });
     } catch (err) {
+        console.log('TOKEN: ', token);
+        console.log(err)
         res.status(401);
         res.send('Could not validate password token.');
         next(err);
