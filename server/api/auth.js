@@ -135,8 +135,10 @@ async function validatePasswordToken(req, res, next) {
 async function setPassword(req, res, next) {
     try {
         let token = req.body.token;
-        let passwordToken = token.slice(-96);
-        let userID = token.slice(0, -96);
+        //let passwordToken = token.slice(-96);
+        //let userID = token.slice(0, -96);
+        let passwordToken = token.slice(2);
+        let userID = token.slice(0, 2);
         let validToken = await Auth.validatePasswordToken(userID, passwordToken);
         if (validToken) {
             let password = req.body.password;
