@@ -61,8 +61,6 @@ router.get('/user', async (req, res, next) => {
 
 async function sendVerificationEmail(req, res, next) {
     try {
-        console.log('send?')
-        console.log('data', req.body.email, req.body.password)
         const user = await Auth.authenticateUser(req.body.email, req.body.password);
         if (!user) {
             res.status(401)
